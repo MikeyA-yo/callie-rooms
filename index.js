@@ -18,18 +18,19 @@ io.on('connection', (socket) => {
     socket.on("join-room", (roomId, userId)=>{
         socket.join(roomId);
         socket.to(roomId).except(socket.id).emit("joined", userId);
+        socket.on("media-share", (data, type)=>{
+          console.log(data)
+          socket.to(roomId).except(socket.id).emit('data', data, type)
+        });
         socket.on('disconnect', () => {
             socket.to(roomId).except(socket.id).emit('user-disconnected', userId)
         });
-        socket.on("media-share", (data, type)=>{
-          socket.to(roomId).except(socket.id).emit('incoming-blob', data, type)
-        })
         socket.on("end", ()=>{
             socket.leave(roomId)
         })
     })
    
   });
-server.listen(port, ()=>{server
+server.listen(port, ()=>{
     console.log(`Running on port ${port === 3000 ? "3k" : port}`)
 })
