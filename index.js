@@ -21,8 +21,8 @@ io.on('connection', (socket) => {
         socket.on('disconnect', () => {
             socket.to(roomId).except(socket.id).emit('user-disconnected', userId)
         });
-        socket.on("media-share", (blob, type)=>{
-          socket.to(roomId).except(socket.id).emit('incoming-blob', blob, type)
+        socket.on("media-share", (data, type)=>{
+          socket.to(roomId).except(socket.id).emit('incoming-blob', data, type)
         })
         socket.on("end", ()=>{
             socket.leave(roomId)
