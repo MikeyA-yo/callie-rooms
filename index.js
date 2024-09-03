@@ -18,9 +18,9 @@ io.on('connection', (socket) => {
     socket.on("join-room", (roomId, userId)=>{
         socket.join(roomId);
         socket.to(roomId).except(socket.id).emit("joined", userId);
-        socket.on("media-share", (data, type)=>{
+        socket.on("chat", (data)=>{
           console.log(data)
-          socket.to(roomId).except(socket.id).emit('data', data, type)
+          socket.to(roomId).except(socket.id).emit('data', data)
         });
         socket.on('disconnect', () => {
             socket.to(roomId).except(socket.id).emit('user-disconnected', userId)
