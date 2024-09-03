@@ -14,7 +14,6 @@ const io = new socket.Server(server, {
   })
 
 io.on('connection', (socket) => {
-    socket.emit("user-connect")
     socket.on("join-room", (roomId, userId)=>{
         socket.join(roomId);
         socket.to(roomId).except(socket.id).emit("joined", userId);
