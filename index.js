@@ -21,6 +21,9 @@ io.on('connection', (socket) => {
           console.log(data)
           socket.to(roomId).except(socket.id).emit('data', data)
         });
+        socket.on("close-cam", ()=>{
+          socket.to(roomId).except(socket.id).emit('user-disconnected', userId)
+        })
         socket.on('disconnect', () => {
             socket.to(roomId).except(socket.id).emit('user-disconnected', userId)
         });
