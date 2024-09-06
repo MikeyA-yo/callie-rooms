@@ -12,14 +12,16 @@ const io = new socket.Server(server, {
       methods: ["GET", "POST"],
     },
   })
-
+app.get("/", (req, res)=>{
+  res.send("Hello socket.io")
+})
 io.on('connection', (socket) => {
     socket.on("join-room", (roomId, userId)=>{
         socket.join(roomId);
         socket.to(roomId).except(socket.id).emit("joined", userId);
         socket.on("chat", (data)=>{
           console.log(data)
-          socket.to(roomId).except(socket.id).emit('data', data)
+          socket.to(roomId).emit('data', data)
         });
         socket.on("close-cam", ()=>{
           socket.to(roomId).except(socket.id).emit('user-disconnected', userId)
