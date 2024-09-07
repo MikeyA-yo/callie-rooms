@@ -16,9 +16,9 @@ app.get("/", (req, res)=>{
   res.send("Hello socket.io")
 })
 io.on('connection', (socket) => {
-    socket.on("join-room", (roomId, userId)=>{
+    socket.on("join-room", (roomId, userId, uname)=>{
         socket.join(roomId);
-        socket.to(roomId).except(socket.id).emit("joined", userId);
+        socket.to(roomId).except(socket.id).emit("joined", userId, uname);
         socket.on("chat", (data, uname)=>{
           socket.to(roomId).emit('data', data, uname)
         });
