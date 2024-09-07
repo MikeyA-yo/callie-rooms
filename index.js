@@ -20,8 +20,7 @@ io.on('connection', (socket) => {
         socket.join(roomId);
         socket.to(roomId).except(socket.id).emit("joined", userId);
         socket.on("chat", (data, uname)=>{
-          console.log(uname)
-          socket.to(roomId).emit('data', data)
+          socket.to(roomId).emit('data', data, uname)
         });
         socket.on("close-cam", ()=>{
           socket.to(roomId).except(socket.id).emit('user-disconnected', userId)
