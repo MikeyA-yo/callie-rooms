@@ -19,8 +19,8 @@ io.on('connection', (socket) => {
     socket.on("join-room", (roomId, userId)=>{
         socket.join(roomId);
         socket.to(roomId).except(socket.id).emit("joined", userId);
-        socket.on("chat", (data)=>{
-          console.log(data)
+        socket.on("chat", (data, uname)=>{
+          console.log(uname)
           socket.to(roomId).emit('data', data)
         });
         socket.on("close-cam", ()=>{
