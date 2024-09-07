@@ -24,6 +24,12 @@ io.on('connection', (socket) => {
         });
         socket.on("close-cam", ()=>{
           socket.to(roomId).except(socket.id).emit('user-disconnected', userId)
+        });
+        socket.on("mute", (id) =>{
+          socket.to(roomId).except(socket.id).emit('muted', id)
+        })
+        socket.on("off", (id) =>{
+          socket.to(roomId).except(socket.id).emit('offed', id)
         })
         socket.on('disconnect', () => {
             socket.to(roomId).except(socket.id).emit('user-disconnected', userId)
