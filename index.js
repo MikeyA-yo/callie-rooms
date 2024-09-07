@@ -27,7 +27,7 @@ io.on('connection', (socket) => {
           uname
         })
         
-        socket.to(roomId).except(socket.id).emit("joined", userId, uname);
+        socket.to(roomId).except(socket.id).emit("joined", userId);
         io.to(roomId).emit("updateP", rooms[roomId]);
         socket.on("chat", (data, uname)=>{
           socket.to(roomId).emit('data', data, uname)
