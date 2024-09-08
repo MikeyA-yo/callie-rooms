@@ -17,14 +17,16 @@ app.get("/", (req, res)=>{
 })
 io.on('connection', (socket) => {
    const rooms = {}
-    socket.on("join-room", (roomId, userId, uname)=>{
+    socket.on("join-room", (roomId, userId, uname, muted, offed)=>{
         socket.join(roomId);
         if(!rooms[roomId]){
           rooms[roomId] = []
         }
         rooms[roomId].push({
           userId,
-          uname
+          uname,
+          muted,
+          offed
         })
         io.to(roomId).emit("updateP", rooms[roomId]);
         socket.to(roomId).except(socket.id).emit("joined", userId);
@@ -34,8 +36,15 @@ io.on('connection', (socket) => {
         socket.on("close-cam", ()=>{
           socket.to(roomId).except(socket.id).emit('user-disconnected', userId)
         });
-        socket.on("mute", (id) =>{
-          socket.to(roomId).except(socket.id).emit('muted', id)
+        socket.on("mute", (id, val) =>{
+          socket.to(roomId).except(socket.id).emit('muted', id, val)
+          for (let i = 0; i < rooms[roomId].length; i++){
+            if(rooms[roomId][i].userId === id){
+              rooms[roomId][i].muted = val;
+              break
+            }
+          }
+          io.to(roomId).emit("updateP", rooms[roomId]);
         })
         socket.on("off", (id) =>{
           socket.to(roomId).except(socket.id).emit('offed', id)
