@@ -28,6 +28,7 @@ io.on('connection', (socket) => {
           muted,
           offed
         })
+        console.log(rooms[roomId])
         io.to(roomId).emit("updateP",rooms[roomId]);
         socket.to(roomId).except(socket.id).emit("joined", userId);
         socket.on("chat", (data, uname)=>{
