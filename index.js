@@ -15,8 +15,8 @@ const io = new socket.Server(server, {
 app.get("/", (req, res)=>{
   res.send("Hello socket.io")
 })
+const rooms = {}
 io.on('connection', (socket) => {
-   const rooms = {}
     socket.on("join-room", (roomId, userId, uname, muted, offed)=>{
         socket.join(roomId);
         if(!rooms[roomId]){
@@ -28,12 +28,7 @@ io.on('connection', (socket) => {
           muted,
           offed
         })
-        io.to(roomId).emit("updateP", {
-          userId,
-          uname,
-          muted,
-          offed
-        });
+        io.to(roomId).emit("updateP",rooms[roomId]);
         socket.to(roomId).except(socket.id).emit("joined", userId);
         socket.on("chat", (data, uname)=>{
           socket.to(roomId).emit('data', data, uname)
@@ -49,14 +44,14 @@ io.on('connection', (socket) => {
               break
             }
           }
-          io.to(roomId).emit("updateP", rooms[roomId][0]);
+          io.to(roomId).emit("updateP", rooms[roomId]);
         })
         socket.on("off", (id) =>{
           socket.to(roomId).except(socket.id).emit('offed', id)
         })
         socket.on('disconnect', () => {
             rooms[roomId] = rooms[roomId].filter(user => user.userId !== userId);
-            io.to(roomId).emit("updateP", rooms[roomId][0]);
+            io.to(roomId).emit("updateP", rooms[roomId]);
             socket.to(roomId).except(socket.id).emit('user-disconnected', userId)
         });
         socket.on("end", ()=>{
