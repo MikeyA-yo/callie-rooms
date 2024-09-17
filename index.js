@@ -54,6 +54,11 @@ io.on('connection', (socket) => {
             io.to(roomId).emit("updateP", rooms[roomId]);
             socket.to(roomId).except(socket.id).emit('user-disconnected', userId, rooms[roomId])
         });
+        socket.on("leave", () =>{
+            rooms[roomId] = rooms[roomId].filter(user => user.userId !== userId);
+            io.to(roomId).emit("updateP", rooms[roomId]);
+            socket.to(roomId).except(socket.id).emit('user-disconnected', userId, rooms[roomId])
+        })
         socket.on("end", ()=>{
             socket.leave(roomId)
             rooms[roomId] = []
