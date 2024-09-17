@@ -46,8 +46,15 @@ io.on('connection', (socket) => {
           }
           io.to(roomId).emit("updateP", rooms[roomId]);
         })
-        socket.on("off", (id) =>{
-          socket.to(roomId).except(socket.id).emit('offed', id)
+        socket.on("off", (id, val) =>{
+          socket.to(roomId).except(socket.id).emit('offed', id, val);
+          for (let i = 0; i < rooms[roomId].length; i++){
+            if(rooms[roomId][i].userId === id){
+              rooms[roomId][i].offed = val;
+              break
+            }
+          }
+          io.to(roomId).emit("updateP", rooms[roomId]);
         })
         socket.on('disconnect', () => {
             rooms[roomId] = rooms[roomId].filter(user => user.userId !== userId);
