@@ -57,13 +57,13 @@ io.on('connection', (socket) => {
           io.to(roomId).emit("updateP", rooms[roomId]);
         })
         socket.on('disconnect', () => {
-            let uname = rooms[roomId].filter(user => user.userId === userId)[0].uname
-            console.log(uname, rooms)
+            console.log(rooms)
             rooms[roomId] = rooms[roomId].filter(user => user.userId !== userId);
             io.to(roomId).emit("updateP", rooms[roomId]);
             socket.to(roomId).except(socket.id).emit('user-disconnected', userId, rooms[roomId], uname)
         });
         socket.on("leave", () =>{
+            console.log(rooms)
             rooms[roomId] = rooms[roomId].filter(user => user.userId !== userId);
             io.to(roomId).emit("updateP", rooms[roomId]);
             socket.to(roomId).except(socket.id).emit('user-disconnected', userId, rooms[roomId])
